@@ -1,18 +1,18 @@
 import graphene
 from graphene_django import DjangoObjectType
 
-from .models import Ads
+from .models import Ad
 
 class AdsType(DjangoObjectType):
     class Meta:
-        model = Ads
+        model = Ad
 
 
 class Query(graphene.ObjectType):
     ads = graphene.List(AdsType)
 
     def resolve_ads(self, into, **kwargs):
-        return Ads.objects.all()
+        return Ad.objects.all()
 
 class CreateAd(graphene.Mutation):
     id = graphene.Int()
@@ -26,14 +26,14 @@ class CreateAd(graphene.Mutation):
         url = graphene.String()
 
     def mutate(self, info, title, description, url):
-        ads = Ads(title=title, description=description, url=url)
-        ads.save()
+        ad = Ad(title=title, description=description, url=url)
+        ad.save()
 
         return CreateAd(
-            id=ads.id,
-            title=ads.title,
-            description=ads.description,
-            url=ads.url,
+            id=ad.id,
+            title=ad.title,
+            description=ad.description,
+            url=ad.url,
         )
 class Mutation(graphene.ObjectType):
     create_ad = CreateAd.Field()
