@@ -9,7 +9,7 @@ class AdsType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    Ads = graphene.List(AdsType)
+    ads = graphene.List(AdsType)
 
     def resolve_ads(self, into, **kwargs):
         return Ads.objects.all()
