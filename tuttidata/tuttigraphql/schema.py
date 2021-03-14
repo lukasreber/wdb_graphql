@@ -1,5 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType
+from django.db.models import Q
 
 from .models import Ad, AdUser
 
@@ -12,10 +13,17 @@ class AdUsersType(DjangoObjectType):
         model = AdUser
 
 class Query(graphene.ObjectType):
-    ads = graphene.List(AdsType)
+    ads = graphene.List(AdsType, search=graphene.String())
     adusers = graphene.List(AdUsersType)
 
-    def resolve_ads(self, into, **kwargs):
+    def resolve_ads(self, into, search=None, **kwargs):
+        if search:
+            filter = (
+                Q(title__icontains=search) |
+                Q(description__icontains=search)
+            )
+            return Ad.objects.filter(filter)
+
         return Ad.objects.all()
 
     def resolve_adusers(self, into, **kwargs):
