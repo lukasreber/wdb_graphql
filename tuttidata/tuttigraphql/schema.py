@@ -26,15 +26,22 @@ class CreateAd(graphene.Mutation):
     title = graphene.String()
     description = graphene.String()
     url = graphene.String()
+    user = graphene.Field(AdUsersType)
     #user = graphene.String()
 
     class Arguments:
         title = graphene.String()
         description = graphene.String()
         url = graphene.String()
+        user_name = graphene.String()
 
-    def mutate(self, info, title, description, url):
-        ad = Ad(title=title, description=description, url=url)
+    def mutate(self, info, title, description, url, user_name):
+
+        user = AdUser.objects.filter(name=user_name).first()
+        if not user:
+            raise Exception('Invalid User!')
+
+        ad = Ad(title=title, description=description, url=url, user=user)
         ad.save()
 
         return CreateAd(
@@ -42,9 +49,8 @@ class CreateAd(graphene.Mutation):
             title=ad.title,
             description=ad.description,
             url=ad.url,
+            user=ad.user
         )
-
-
 
 
 class Mutation(graphene.ObjectType):
