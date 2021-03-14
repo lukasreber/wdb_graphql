@@ -35,3 +35,14 @@ Start Django webserver
 The project comes with Graph*i*QL installed, which which is a simple UI to access the API. It can be accesses on the following url: [http://127.0.0.1:8000/graphql](http://127.0.0.1:8000/graphql)
 
 ## Testing
+
+Run tests with
+
+    pytest -W ignore::DeprecationWarning
+
+Note: there are currently some DepricationWarnings from the graphene library
+
+### Resources
+
+* [howtographql](https://www.howtographql.com/basics/0-introduction/)
+* [morningpython](https://morningpython.com/2019/12/23/unit-testing-graphene-django-api-with-pytest/)
