@@ -38,6 +38,7 @@ The project comes with Graph*i*QL installed, which which is a simple UI to acces
 
 Run tests with
 
+    cd tuttidata
     pytest -W ignore::DeprecationWarning
 
 Note: there are currently some DepricationWarnings from the graphene library
@@ -45,4 +46,5 @@ Note: there are currently some DepricationWarnings from the graphene library
 ### Resources
 
 * [howtographql](https://www.howtographql.com/basics/0-introduction/)
+* [docs.graphene-python](https://docs.graphene-python.org/en/latest/testing/)
 * [morningpython](https://morningpython.com/2019/12/23/unit-testing-graphene-django-api-with-pytest/)
