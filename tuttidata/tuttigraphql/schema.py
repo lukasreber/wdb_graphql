@@ -13,10 +13,17 @@ class AdUsersType(DjangoObjectType):
         model = AdUser
 
 class Query(graphene.ObjectType):
-    ads = graphene.List(AdsType, search=graphene.String())
+    ads = graphene.List(
+        AdsType, 
+        search=graphene.String(),
+        first=graphene.Int(),
+        skip=graphene.Int(),
+        )
     adusers = graphene.List(AdUsersType)
 
-    def resolve_ads(self, into, search=None, **kwargs):
+    def resolve_ads(self, into, search=None, first=None, skip=None, **kwargs):
+        qs = Ad.objects.all()
+
         if search:
             filter = (
                 Q(title__icontains=search) |
@@ -24,7 +31,13 @@ class Query(graphene.ObjectType):
             )
             return Ad.objects.filter(filter)
 
-        return Ad.objects.all()
+        if skip:
+            qs = qs[skip:]
+
+        if first:
+            qs = qs[:first]
+
+        return qs
 
     def resolve_adusers(self, into, **kwargs):
         return AdUser.objects.all()
