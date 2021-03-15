@@ -1,12 +1,12 @@
 # GraphQL API for Tutti Web Scraper Project
 
-**Mini Challenge 3 - wdb @ FHNE BSc Data Science**
+**Mini Challenge 3 - wdb @ FHNW BSc Data Science**
 
 **Author: Lukas Reber**
 
 GraphQL API built with Django and Graphene. The API is used by the Selenium Web Scraping Script (found [here](https://github.com/lukasreber/wdb_scraper)) to store and update data in the database.
 
-Since this is only a proof of concecpt, the internal django sqlite3 database was used to store data.
+Since this is only a proof of concept, the internal django sqlite3 database was used to store data.
 
 ## Installation
 
