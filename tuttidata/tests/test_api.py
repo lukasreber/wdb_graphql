@@ -64,6 +64,14 @@ mutation($name: String!) {
 }
 '''
 
+ad_delete_query = '''
+mutation($id: Int!){
+  deleteAd(id: $id) {
+    ok
+  }
+}
+'''
+
 @pytest.mark.django_db
 class TestTuttigraphQLSchema(TestCase):
 
@@ -103,7 +111,6 @@ class TestTuttigraphQLSchema(TestCase):
         }
         response = self.client.execute(aduser_create_query,variables=payload)
         response_api = response.get('data').get('createAduser')
-        print(response.get('data'))
         assert response_api['name'] == payload['name']
 
     # check if search for title is returned
@@ -124,4 +131,8 @@ class TestTuttigraphQLSchema(TestCase):
         response_api = response.get('errors')[0]
         assert response_api['message'] == 'Invalid User!'    
 
-    
+    # delete ad
+    def test_deletead_query(self):
+        response = self.client.execute(ad_delete_query,variables={"id": self.ad.id})
+        response_api = response.get('data').get('deleteAd')
+        assert response_api['ok'] == True

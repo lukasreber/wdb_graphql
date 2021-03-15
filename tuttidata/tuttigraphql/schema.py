@@ -89,8 +89,21 @@ class CreateAdUser(graphene.Mutation):
             name=aduser.name
         )
 
+class DeleteAd(graphene.Mutation):
+    ok = graphene.Boolean()
+
+    class Arguments:
+        id = graphene.Int()
+
+    def mutate(self, info, id):
+        ad = Ad.objects.get(id=id)
+        ad.delete()
+
+        return DeleteAd(ok=True)
+
 
 class Mutation(graphene.ObjectType):
     create_ad = CreateAd.Field()
     create_aduser = CreateAdUser.Field()
+    delete_ad = DeleteAd.Field()
         
