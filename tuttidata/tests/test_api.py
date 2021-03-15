@@ -18,6 +18,14 @@ ads {
 }
 '''
 
+ad_all_user_query = '''
+query{
+adusers {
+    name
+}
+}
+'''
+
 ad_search_query = '''
 query($search: String!){
 ads(search: $search) {
@@ -46,6 +54,16 @@ mutation($title: String!,$description: String!, $url: String!, $user: String!) {
 }
 '''
 
+aduser_create_query = '''
+mutation($name: String!) {
+  createAduser(
+      name: $name
+  ) {
+    name
+  }  
+}
+'''
+
 @pytest.mark.django_db
 class TestTuttigraphQLSchema(TestCase):
 
@@ -53,10 +71,16 @@ class TestTuttigraphQLSchema(TestCase):
         self.client = Client(schema)
         self.ad = mixer.blend(Ad)
 
-    # check if any data is returned
-    def test_query(self):
+    # check if any data for ad table is returned
+    def test_ads_query(self):
         response = self.client.execute(ad_all_query)
         response_api = response.get("data").get("ads")
+        assert len(response)
+
+    # check if any data for aduser table is returned
+    def test_adusers_query(self):
+        response = self.client.execute(ad_all_user_query)
+        response_api = response.get("data").get("adusers")
         assert len(response)
 
     # create ad    
@@ -71,6 +95,16 @@ class TestTuttigraphQLSchema(TestCase):
         response = self.client.execute(ad_create_query,variables=payload)
         response_api = response.get('data').get('createAd')
         assert response_api['title'] == payload['title']
+
+    # create aduser   
+    def test_createaduser_query(self):
+        payload = {
+            "name": "a_new_user"
+        }
+        response = self.client.execute(aduser_create_query,variables=payload)
+        response_api = response.get('data').get('createAduser')
+        print(response.get('data'))
+        assert response_api['name'] == payload['name']
 
     # check if search for title is returned
     def test_search_query(self):

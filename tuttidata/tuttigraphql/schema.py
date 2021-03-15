@@ -73,7 +73,24 @@ class CreateAd(graphene.Mutation):
             user=ad.user
         )
 
+class CreateAdUser(graphene.Mutation):
+    id = graphene.Int()
+    name = graphene.String()
+
+    class Arguments:
+        name = graphene.String()
+
+    def mutate(self, info, name):
+        aduser = AdUser(name=name)
+        aduser.save()
+
+        return CreateAdUser(
+            id=aduser.id,
+            name=aduser.name
+        )
+
 
 class Mutation(graphene.ObjectType):
     create_ad = CreateAd.Field()
+    create_aduser = CreateAdUser.Field()
         
