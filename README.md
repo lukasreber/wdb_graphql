@@ -32,7 +32,7 @@ Start Django webserver
 
 ## Query / Documentation
 
-The project comes with Graph*i*QL installed, which which is a simple UI to access the API. It can be accesses on the following url: [http://127.0.0.1:8000/graphql](http://127.0.0.1:8000/graphql)
+The project comes with GraphiQL installed, which is a simple UI to access the API and browse the data model. It can be found here: [http://127.0.0.1:8000/graphql](http://127.0.0.1:8000/graphql)
 
 ## Testing
 
