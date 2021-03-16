@@ -48,7 +48,6 @@ class CreateAd(graphene.Mutation):
     description = graphene.String()
     url = graphene.String()
     user = graphene.Field(AdUsersType)
-    #user = graphene.String()
 
     class Arguments:
         title = graphene.String()
@@ -101,9 +100,26 @@ class DeleteAd(graphene.Mutation):
 
         return DeleteAd(ok=True)
 
+class DeleteAdUser(graphene.Mutation):
+    ok = graphene.Boolean()
+
+    class Arguments:
+        id = graphene.Int()
+
+    def mutate(self, info, id):
+        aduser = AdUser.objects.get(id=id)
+        aduser.delete()
+
+        return DeleteAdUser(ok=True)
+
 
 class Mutation(graphene.ObjectType):
     create_ad = CreateAd.Field()
     create_aduser = CreateAdUser.Field()
     delete_ad = DeleteAd.Field()
+    delete_aduser = DeleteAdUser.Field()
         
+
+# Delete Ad User + Tests
+# Update Ad + Tests
+# Update Ad User + Tests

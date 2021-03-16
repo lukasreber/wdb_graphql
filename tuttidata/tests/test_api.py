@@ -72,6 +72,14 @@ mutation($id: Int!){
 }
 '''
 
+aduser_delete_query = '''
+mutation($id: Int!){
+  deleteAduser(id: $id) {
+    ok
+  }
+}
+'''
+
 @pytest.mark.django_db
 class TestTuttigraphQLSchema(TestCase):
 
@@ -135,4 +143,11 @@ class TestTuttigraphQLSchema(TestCase):
     def test_deletead_query(self):
         response = self.client.execute(ad_delete_query,variables={"id": self.ad.id})
         response_api = response.get('data').get('deleteAd')
+        assert response_api['ok'] == True
+
+    # delete aduser
+    def test_deleteaduser_query(self):
+        user = mixer.blend(AdUser)
+        response = self.client.execute(aduser_delete_query,variables={"id": user.id})
+        response_api = response.get('data').get('deleteAduser')
         assert response_api['ok'] == True
