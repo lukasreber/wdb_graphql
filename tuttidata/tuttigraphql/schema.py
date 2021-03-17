@@ -43,12 +43,14 @@ class Query(graphene.ObjectType):
         return AdUser.objects.all()
 
 class CreateAd(graphene.Mutation):
+    # attributes which are returned
     id = graphene.Int()
     title = graphene.String()
     description = graphene.String()
     url = graphene.String()
     user = graphene.Field(AdUsersType)
 
+    # attributes to be used in the mutation
     class Arguments:
         title = graphene.String()
         description = graphene.String()
@@ -57,13 +59,16 @@ class CreateAd(graphene.Mutation):
 
     def mutate(self, info, title, description, url, user_name):
 
+        # check if the submited user exists, if not raise an error
         user = AdUser.objects.filter(name=user_name).first()
         if not user:
             raise Exception('Invalid User!')
-
+        
+        # add the new entry to the database
         ad = Ad(title=title, description=description, url=url, user=user)
         ad.save()
 
+        # return all the attributes
         return CreateAd(
             id=ad.id,
             title=ad.title,
@@ -73,13 +78,16 @@ class CreateAd(graphene.Mutation):
         )
 
 class CreateAdUser(graphene.Mutation):
+    # attributes which are returned
     id = graphene.Int()
     name = graphene.String()
 
+    # attributes to be used in the mutation
     class Arguments:
         name = graphene.String()
 
     def mutate(self, info, name):
+        # add new user to the database
         aduser = AdUser(name=name)
         aduser.save()
 
@@ -89,36 +97,43 @@ class CreateAdUser(graphene.Mutation):
         )
 
 class DeleteAd(graphene.Mutation):
+    # attributes which are returned
     ok = graphene.Boolean()
 
+    # attributes to be used in the mutation
     class Arguments:
         id = graphene.Int()
 
     def mutate(self, info, id):
+        # delete ad with id provided
         ad = Ad.objects.get(id=id)
         ad.delete()
 
         return DeleteAd(ok=True)
 
 class DeleteAdUser(graphene.Mutation):
+    # attributes which are returned
     ok = graphene.Boolean()
 
+    # attributes to be used in the mutation
     class Arguments:
         id = graphene.Int()
 
     def mutate(self, info, id):
+        # delete user with id provided
         aduser = AdUser.objects.get(id=id)
         aduser.delete()
 
         return DeleteAdUser(ok=True)
 
 class UpdateAd(graphene.Mutation):
+    # attributes which are returned
     id = graphene.Int()
     title = graphene.String()
     description = graphene.String()
     url = graphene.String()
 
-
+    # attributes to be used in the mutation
     class Arguments:
         id = graphene.Int()
         title = graphene.String()
@@ -126,9 +141,10 @@ class UpdateAd(graphene.Mutation):
         url = graphene.String()
 
     def mutate(self, info, id, **kwargs):
-        
+        # get ad with id from database
         ad = Ad.objects.get(id=id)
 
+        # for each other attribte, if not empty, update the value, otherwise do nothing
         if kwargs.get('title'):
             ad.title = kwargs.get('title', None)
         if kwargs.get('description'):
@@ -145,17 +161,19 @@ class UpdateAd(graphene.Mutation):
         )
 
 class UpdateAdUser(graphene.Mutation):
+    # attributes which are returned
     id = graphene.Int()
     name = graphene.String()
 
-
+    # attributes to be used in the mutation
     class Arguments:
         id = graphene.Int()
         name = graphene.String()
 
     def mutate(self, info, id, name):
-        
+        # get user with id provided
         aduser = AdUser.objects.get(id=id)
+        # update name with new value
         aduser.name = name
         aduser.save()
 

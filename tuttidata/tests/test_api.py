@@ -100,6 +100,10 @@ mutation($id: Int!,$newname: String!) {
 }
 '''
 
+# all tests follow the same format: 
+# 1. data is added directory to the database using the mixer extension
+# 2. query is performed to the api
+# 3. the response is checked for consistency
 
 @pytest.mark.django_db
 class TestTuttigraphQLSchema(TestCase):
@@ -117,12 +121,13 @@ class TestTuttigraphQLSchema(TestCase):
         assert len(response)
 
     # check if any data for aduser table is returned
+    # a simple test just to see if data is returned, content of data is not checked
     def test_adusers_query(self):
         response = self.client.execute(ad_all_user_query)
         res = response.get("data").get("adusers")
         assert len(response)
 
-    # create ad
+    # create ad over the api and check if all attributes are returned correctly
     def test_createad_query(self):
         user = mixer.blend(AdUser)
         payload = {
@@ -138,7 +143,7 @@ class TestTuttigraphQLSchema(TestCase):
         assert res['url'] == payload['url']
         assert res.get('user')['id'] == str(user.id)
 
-    # create aduser
+    # create user over the api and check if all attributes are returned correctly
     def test_createaduser_query(self):
         payload = {
             "name": "a_new_user"
@@ -154,7 +159,7 @@ class TestTuttigraphQLSchema(TestCase):
         res = response.get('data').get('ads')
         assert res[0]['title'] == str(self.ad.title)
 
-    # insert false user
+    # check if only existing users can be added to an ad
     def test_false_user_query(self):
         payload = {
             "title": "test title",
@@ -166,14 +171,14 @@ class TestTuttigraphQLSchema(TestCase):
         res = response.get('errors')[0]
         assert res['message'] == 'Invalid User!'
 
-    # delete ad
+    # check if deleting an ad works
     def test_deletead_query(self):
         response = self.client.execute(
             ad_delete_query, variables={"id": self.ad.id})
         res = response.get('data').get('deleteAd')
         assert res['ok'] == True
 
-    # delete aduser
+    # check if deleting an user works
     def test_deleteaduser_query(self):
         user = mixer.blend(AdUser)
         response = self.client.execute(
@@ -181,7 +186,7 @@ class TestTuttigraphQLSchema(TestCase):
         res = response.get('data').get('deleteAduser')
         assert res['ok'] == True
 
-    # update ad
+    # check if updating an ad works and if the other untouched attributes stay the same
     def test_updatead_query(self):
         newtitle = "some new title"
         response = self.client.execute(ad_update_query, variables={
@@ -191,7 +196,7 @@ class TestTuttigraphQLSchema(TestCase):
         assert res.get('description') == self.ad.description
         assert res.get('url') == self.ad.url
 
-    # update aduser
+    # check if updating an user works
     def test_updateaduser_query(self):
         newname = "new username"
         response = self.client.execute(aduser_update_query, variables={
