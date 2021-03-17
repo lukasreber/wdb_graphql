@@ -1,0 +1,30 @@
+mutation {
+  createAd(
+    title: "this is a test",
+    description: "does it work?",
+    url: "http://whoknows"
+  ) {
+    id
+    title
+    description
+    url
+  }  
+}
+
+
+query {
+  ads {
+  	id
+    title
+  }
+}
+
+Testuser1
+
+
+
+mutation{
+  updateAd(id:1,title:"newtitle",description:"newdesc",url:"newurl") {
+    id
+  }
+}

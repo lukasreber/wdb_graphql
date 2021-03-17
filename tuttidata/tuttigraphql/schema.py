@@ -117,7 +117,7 @@ class UpdateAd(graphene.Mutation):
     title = graphene.String()
     description = graphene.String()
     url = graphene.String()
-    #user = graphene.Field(AdUsersType)
+
 
     class Arguments:
         id = graphene.Int()
@@ -125,19 +125,44 @@ class UpdateAd(graphene.Mutation):
         description = graphene.String()
         url = graphene.String()
 
-    def mutate(self, info, id, title, description, url):
+    def mutate(self, info, id, **kwargs):
+        
         ad = Ad.objects.get(id=id)
-        ad.title = title
-        ad.description = description
-        ad.url = url
+
+        if kwargs.get('title'):
+            ad.title = kwargs.get('title', None)
+        if kwargs.get('description'):
+            ad.description = kwargs.get('description', None)
+        if kwargs.get('url'):
+            ad.url = kwargs.get('url', None)
         ad.save()
 
-        return UpdateAd(id=ad.id,
+        return UpdateAd(
+            id=ad.id,
             title=ad.title,
             description=ad.description,
-            url=ad.url)
-            #user=ad.user)
+            url=ad.url
+        )
 
+class UpdateAdUser(graphene.Mutation):
+    id = graphene.Int()
+    name = graphene.String()
+
+
+    class Arguments:
+        id = graphene.Int()
+        name = graphene.String()
+
+    def mutate(self, info, id, name):
+        
+        aduser = AdUser.objects.get(id=id)
+        aduser.name = name
+        aduser.save()
+
+        return UpdateAdUser(
+            id=aduser.id,
+            name=aduser.name,
+        )
 
 class Mutation(graphene.ObjectType):
     create_ad = CreateAd.Field()
@@ -145,7 +170,5 @@ class Mutation(graphene.ObjectType):
     delete_ad = DeleteAd.Field()
     delete_aduser = DeleteAdUser.Field()
     update_ad = UpdateAd.Field()
-        
+    update_aduser = UpdateAdUser.Field()
 
-# Update Ad + Tests
-# Update Ad User + Tests
