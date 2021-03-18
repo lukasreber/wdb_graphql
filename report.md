@@ -5,15 +5,19 @@
 
 ## Umsetzung
 
-Für die Mini Challenge 3 der Kompetenz Web Datenbeschaffung (wdb) wurde ein GraphQL API mittels [Django](https://www.djangoproject.com) und [Graphene](https://graphene-python.org) umgesetzt. Die API dient als Schnittstelle um die in der Mini Challenge 4 von wdb gescrapten Daten entsprechend in eine Datenbank abzulegen. (Weitere Informationen zur Umsetzung der Mini Challenge 4 sind [hier](https://github.com/lukasreber/wdb_scraper) zu finden).
+Für die Mini Challenge 3 der Kompetenz Web Datenbeschaffung (wdb) wurde eine GraphQL API mittels [Django](https://www.djangoproject.com) und [Graphene](https://graphene-python.org) umgesetzt. Die API dient als Schnittstelle um die in der Mini Challenge 4 von wdb gescrapten Daten entsprechend in eine Datenbank abzulegen. (Weitere Informationen zur Umsetzung der Mini Challenge 4 sind [hier](https://github.com/lukasreber/wdb_scraper) zu finden).
 
 Das Datenmodell besteht aus den Tabellen 'User' und 'Ad'. In der Tabelle 'Ad' sind die gescrapten Tutti Inserate hinterlegt. Die Tabelle 'User' beinhaltet die Tutti Benutzer, also Usernamen der Inserenten. Da ein User mehrere Inserate aufgeben kann, wurden die Userinformationen in eine separate Tabelle ausgelagert und über die User ID verknüpft. Da es sich hierbei lediglich um einen "Proof of concecpt" handelt, wurde darauf verzichtet eine richtige Datenbankanbindung zu realisieren. Stattdessen wurde die interne, filebasierte SQLite3 Datenbank von Django verwendet.
 
 In der API wurde sämtliche CRUD Funktionen implementiert. Somit lassen sich über die API alle Daten der Datenbank abrufen, veränder und löschen sowie neue Daten einfügen. Die API lässt sich nach dem ausführen über die URL [http://127.0.0.1:8000/graphql](http://127.0.0.1:8000/graphql) mittels einer graphischen Oberfläche benutzen. GraphQL erstellt zudem eine automatische Dokumentation, somit ist dort ersichtlich, welche Queries und Mutations verfügbar sind.
 
-Um die Schnittstelle zu testen wurden diverse Tests mit pytests realisiert.
+Für die Umsetzung der API mittels Django sind folgende Bereiche entscheidend:
 
-Der Data Science Aspekt ist insofern gegeben, dass die Erstellung einer GraphQL API in relativ kurzer Zeit realisierbar ist und dies somit eine einfache und schnelle Lösung bietet, Daten zur Verfügung zu stellen. Da das Datenmodell sehr einfach ist und die Daten nicht weiter verarbeitet werden sehe ich hierbei jedoch keine weiteren explizite Data Science Aspekte.
+- tuttidata/tuttigraphql/models.py: Definition des Datenmodells. Hier wurden die Tabellen und Felder der Datenbank definiert, deren Attribute, sowie die Verknüfung der Tabellen.
+- tuttidata/tuttigraphql/schema.py: Definition der GraphQL API. Hierfür wird das entsprechende Datenmodell importiert und anschliessend das Schema der API definiert (Welche Queries mit welchen Attributen auf der Schnittstelle zur Verfügung stehen)
+- tuttidata/tests/test_api.py: Definition sämtlicher Testfälle. Für die Erstellung von "Dummy-Daten" wurde die Library [Mixer](https://github.com/klen/mixer) verwendet. Anschliessend wurden sämtliche CRUD Funktionalitäten getestet.
+
+Der Data Science Aspekt ist insofern gegeben, dass die Erstellung einer API in relativ kurzer Zeit realisierbar ist und dies somit eine einfache und schnelle Lösung bietet, Daten einer Applikation zur Verfügung zu stellen. Da das Datenmodell in diesem Fall sehr einfach ist und die Daten nicht weiter verarbeitet werden sehe ich hierbei jedoch keine weiteren explizite Data Science Aspekte.
 
 ## GraphQL vs REST
 
