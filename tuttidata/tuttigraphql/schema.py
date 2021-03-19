@@ -19,7 +19,11 @@ class Query(graphene.ObjectType):
         first=graphene.Int(),
         skip=graphene.Int(),
         )
-    adusers = graphene.List(AdUsersType)
+    adusers = graphene.List(
+        AdUsersType, 
+        id=graphene.Int(),
+        name=graphene.String()
+        )
 
     def resolve_ads(self, into, search=None, first=None, skip=None, **kwargs):
         qs = Ad.objects.all()
@@ -39,8 +43,15 @@ class Query(graphene.ObjectType):
 
         return qs
 
-    def resolve_adusers(self, into, **kwargs):
+    def resolve_adusers(self, into, id=None, name=None, **kwargs):
+        if id:
+            return AdUser.objects.filter(id=id)
+
+        if name:
+            return AdUser.objects.filter(name=name)
+        
         return AdUser.objects.all()
+
 
 class CreateAd(graphene.Mutation):
     # attributes which are returned

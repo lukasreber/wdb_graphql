@@ -9,7 +9,7 @@ class Ad(models.Model):
     title = models.CharField(blank=True, max_length=300)
     price = models.IntegerField(blank=True)
     zipcode = models.IntegerField(blank=True)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True,max_length=5000)
     category = models.CharField(blank=True,max_length=300)
     url = models.URLField(blank=True)
     dateadded = models.CharField(blank=True,max_length=100)
