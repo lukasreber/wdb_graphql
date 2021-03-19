@@ -36,10 +36,27 @@ ads(search: $search) {
 '''
 
 ad_create_query = '''
-mutation($title: String!,$description: String!, $url: String!, $user: String!) {
+mutation(
+        $nr: Int!,
+        $title: String!,
+        $price: Int!,
+        $zipcode: Int!,
+        $description: String!, 
+        $category: String!,
+        $dateadded: String!,
+        $views: Int!,
+        $url: String!, 
+        $user: String!
+        ) {
   createAd(
+      nr: $nr,
       title: $title,
+      price: $price,
+      zipcode: $zipcode,
       description: $description,
+      category: $category,
+      dateadded: $dateadded,
+      views: $views,
       url: $url,
       userName: $user
   ) {
@@ -131,30 +148,37 @@ class TestTuttigraphQLSchema(TestCase):
     def test_createad_query(self):
         user = mixer.blend(AdUser)
         payload = {
+            "nr": "1234556791",
             "title": "test title",
+            "price": "554",
+            "zipcode": "3012",
             "description": "this is a description test",
+            "category": "food",
+            "dateadded": "12.12.2020",
+            "views": "44",
             "url": "https://thisisaurl.com",
             "user": user.name
         }
-        response = self.client.execute(ad_create_query, variables=payload)
+        response = self.client.execute(ad_create_query, variable_values=payload)
         res = response.get('data').get('createAd')
         assert res['title'] == payload['title']
         assert res['description'] == payload['description']
         assert res['url'] == payload['url']
         assert res.get('user')['id'] == str(user.id)
+        # assert all values if possible....
 
     # create user over the api and check if all attributes are returned correctly
     def test_createaduser_query(self):
         payload = {
             "name": "a_new_user"
         }
-        response = self.client.execute(aduser_create_query, variables=payload)
+        response = self.client.execute(aduser_create_query, variable_values=payload)
         res = response.get('data').get('createAduser')
         assert res['name'] == payload['name']
 
     # check if search for title is returned
     def test_search_query(self):
-        response = self.client.execute(ad_search_query, variables={
+        response = self.client.execute(ad_search_query, variable_values={
                                        "search": self.ad.title})
         res = response.get('data').get('ads')
         assert res[0]['title'] == str(self.ad.title)
@@ -162,19 +186,25 @@ class TestTuttigraphQLSchema(TestCase):
     # check if only existing users can be added to an ad
     def test_false_user_query(self):
         payload = {
+            "nr": "1234556791",
             "title": "test title",
+            "price": "554",
+            "zipcode": "3012",
             "description": "this is a description test",
+            "category": "food",
+            "dateadded": "12.12.2020",
+            "views": "44",
             "url": "https://thisisaurl.com",
             "user": "doesnotexist"
         }
-        response = self.client.execute(ad_create_query, variables=payload)
+        response = self.client.execute(ad_create_query, variable_values=payload)
         res = response.get('errors')[0]
         assert res['message'] == 'Invalid User!'
 
     # check if deleting an ad works
     def test_deletead_query(self):
         response = self.client.execute(
-            ad_delete_query, variables={"id": self.ad.id})
+            ad_delete_query, variable_values={"id": self.ad.id})
         res = response.get('data').get('deleteAd')
         assert res['ok'] == True
 
@@ -182,14 +212,14 @@ class TestTuttigraphQLSchema(TestCase):
     def test_deleteaduser_query(self):
         user = mixer.blend(AdUser)
         response = self.client.execute(
-            aduser_delete_query, variables={"id": user.id})
+            aduser_delete_query, variable_values={"id": user.id})
         res = response.get('data').get('deleteAduser')
         assert res['ok'] == True
 
     # check if updating an ad works and if the other untouched attributes stay the same
     def test_updatead_query(self):
         newtitle = "some new title"
-        response = self.client.execute(ad_update_query, variables={
+        response = self.client.execute(ad_update_query, variable_values={
                                        "id": self.ad.id, "newtitle": newtitle})
         res = response.get('data').get('updateAd')
         assert res.get('title') == newtitle
@@ -199,7 +229,7 @@ class TestTuttigraphQLSchema(TestCase):
     # check if updating an user works
     def test_updateaduser_query(self):
         newname = "new username"
-        response = self.client.execute(aduser_update_query, variables={
+        response = self.client.execute(aduser_update_query, variable_values={
                                        "id": self.aduser.id, "newname": newname})
         res = response.get('data').get('updateAduser')
         assert res.get('name') == newname

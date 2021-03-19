@@ -45,19 +45,31 @@ class Query(graphene.ObjectType):
 class CreateAd(graphene.Mutation):
     # attributes which are returned
     id = graphene.Int()
+    nr = graphene.Int()
     title = graphene.String()
+    price = graphene.Int()
+    zipcode = graphene.Int()
     description = graphene.String()
+    category = graphene.String()
     url = graphene.String()
+    dateadded = graphene.String()
+    views = graphene.Int()
     user = graphene.Field(AdUsersType)
 
     # attributes to be used in the mutation
     class Arguments:
+        nr = graphene.Int()
         title = graphene.String()
+        price = graphene.Int()
+        zipcode = graphene.Int()
         description = graphene.String()
+        category = graphene.String()
         url = graphene.String()
+        dateadded = graphene.String()
+        views = graphene.Int()
         user_name = graphene.String()
 
-    def mutate(self, info, title, description, url, user_name):
+    def mutate(self, info, nr, title, price, zipcode, description, category, url, dateadded, views, user_name):
 
         # check if the submited user exists, if not raise an error
         user = AdUser.objects.filter(name=user_name).first()
@@ -65,14 +77,17 @@ class CreateAd(graphene.Mutation):
             raise Exception('Invalid User!')
         
         # add the new entry to the database
-        ad = Ad(title=title, description=description, url=url, user=user)
+        ad = Ad(nr=nr, title=title, price=price, zipcode=zipcode, description=description, category=category, url=url, dateadded=dateadded, views=views, user=user)
         ad.save()
 
         # return all the attributes
         return CreateAd(
             id=ad.id,
+            nr=ad.nr,
             title=ad.title,
+            price=ad.price,
             description=ad.description,
+            category=ad.category,
             url=ad.url,
             user=ad.user
         )
