@@ -5,7 +5,7 @@ class AdUser(models.Model):
     name = models.TextField(blank=True)
 
 class Ad(models.Model):
-    nr = models.IntegerField(blank=True)
+    nr = models.CharField(blank=True, max_length=20) #This is not an integer since graphene can't handle more than 32bit Int
     title = models.CharField(blank=True, max_length=300)
     price = models.IntegerField(blank=True)
     zipcode = models.IntegerField(blank=True)

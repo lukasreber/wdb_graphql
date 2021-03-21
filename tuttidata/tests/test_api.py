@@ -37,7 +37,7 @@ ads(search: $search) {
 
 ad_create_query = '''
 mutation(
-        $nr: Int!,
+        $nr: String!,
         $title: String!,
         $price: Int!,
         $zipcode: Int!,

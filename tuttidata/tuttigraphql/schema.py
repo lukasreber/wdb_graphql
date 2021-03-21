@@ -56,7 +56,7 @@ class Query(graphene.ObjectType):
 class CreateAd(graphene.Mutation):
     # attributes which are returned
     id = graphene.Int()
-    nr = graphene.Int()
+    nr = graphene.String()
     title = graphene.String()
     price = graphene.Int()
     zipcode = graphene.Int()
@@ -69,7 +69,7 @@ class CreateAd(graphene.Mutation):
 
     # attributes to be used in the mutation
     class Arguments:
-        nr = graphene.Int()
+        nr = graphene.String()
         title = graphene.String()
         price = graphene.Int()
         zipcode = graphene.Int()
